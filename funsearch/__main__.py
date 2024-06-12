@@ -6,8 +6,6 @@ import pickle
 import time
 
 import click
-from dotenv import load_dotenv
-
 
 from funsearch import config, core, sandbox, sampler, programs_database, code_manipulation, evaluator
 
