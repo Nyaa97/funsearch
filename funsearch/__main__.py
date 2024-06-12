@@ -6,7 +6,6 @@ import pickle
 import time
 
 import click
-import llm
 from dotenv import load_dotenv
 
 
@@ -58,13 +57,13 @@ def main(ctx):
 @main.command()
 @click.argument("spec_file", type=click.File("r"))
 @click.argument('inputs')
-@click.option('--model_name', default="gpt-3.5-turbo-instruct", help='LLM model')
+@click.option('--model', help='LLM model path (.gguf)')
 @click.option('--output_path', default="./data/", type=click.Path(file_okay=False), help='path for logs and data')
 @click.option('--load_backup', default=None, type=click.File("rb"), help='Use existing program database')
 @click.option('--iterations', default=-1, type=click.INT, help='Max iterations per sampler')
 @click.option('--samplers', default=15, type=click.INT, help='Samplers')
 @click.option('--sandbox_type', default="ContainerSandbox", type=click.Choice(SANDBOX_NAMES), help='Sandbox type')
-def run(spec_file, inputs, model_name, output_path, load_backup, iterations, samplers, sandbox_type):
+def run(spec_file, inputs, model, output_path, load_backup, iterations, samplers, sandbox_type):
   """ Execute function-search algorithm:
 
 \b
@@ -81,21 +80,13 @@ def run(spec_file, inputs, model_name, output_path, load_backup, iterations, sam
               ./examples/cap_set_input_data.json
 """
 
-  # Load environment variables from .env file.
-  #
-  # Using OpenAI APIs with 'llm' package requires setting the variable
-  # OPENAI_API_KEY=sk-...
-  # See 'llm' package on how to use other providers.
-  load_dotenv()
-
   timestamp = str(int(time.time()))
   log_path = pathlib.Path(output_path) / timestamp
   if not log_path.exists():
     log_path.mkdir(parents=True)
     logging.info(f"Writing logs to {log_path}")
 
-  model = llm.get_model(model_name)
-  model.key = model.get_key()
+  model = pathlib.Path(model)
   lm = sampler.LLM(2, model, log_path)
 
   specification = spec_file.read()

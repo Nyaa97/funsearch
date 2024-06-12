@@ -16,8 +16,10 @@
 """Class for sampling new programs."""
 from collections.abc import Collection, Sequence
 
-import llm
 import numpy as np
+
+from pathlib import Path
+from llama_cpp import Llama
 
 from funsearch import evaluator
 from funsearch import programs_database
@@ -26,15 +28,18 @@ from funsearch import programs_database
 class LLM:
   """Language model that predicts continuation of provided source code."""
 
-  def __init__(self, samples_per_prompt: int, model: llm.Model, log_path=None) -> None:
+  def __init__(self, samples_per_prompt: int, model: Path, log_path=None) -> None:
     self._samples_per_prompt = samples_per_prompt
-    self.model = model
+    self.model = Llama(
+      model,
+      n_gpu_layers=-1,
+    )
     self.prompt_count = 0
     self.log_path = log_path
 
   def _draw_sample(self, prompt: str) -> str:
     """Returns a predicted continuation of `prompt`."""
-    response = self.model.prompt(prompt)
+    response = self.model(prompt)["choices"][0]["text"]
     self._log(prompt, response, self.prompt_count)
     self.prompt_count += 1
     return response

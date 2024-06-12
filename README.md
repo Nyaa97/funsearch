@@ -14,11 +14,7 @@ podman build . -t funsearch
 mkdir data
 podman run -it -v ./data:/workspace/data funsearch
 
-# Set the environment variable OPENAI_API_KEY=sk-xxxx or create .env file.
-# "gpt-3.5-turbo-instruct" model is used by default.
-# Refer to 'llm' package docs to use other models.
-
-funsearch run examples/cap_set_spec.py 11 --sandbox_type ExternalProcessSandbox
+funsearch run examples/cap_set_spec.py 11 --sandbox_type ExternalProcessSandbox --model model.gguf
 ```
 In here we are searching for the algorithm to find maximum cap sets for dimension 11.
 You should see output something like
