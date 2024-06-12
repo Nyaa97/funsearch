@@ -7,6 +7,8 @@ Usage:
 You can run FunSearch in container using Podman or Docker
 
 ```
+CMAKE_ARGS="-DLLAMA_CUDA=on" FORCE_CMAKE=1 pip install llama-cpp-python --force-reinstall --upgrade --no-cache-dir --verbose
+
 podman build . -t funsearch
 
 
