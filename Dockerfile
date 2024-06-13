@@ -11,6 +11,6 @@ RUN pdm install  --no-self
 COPY examples ./examples
 COPY funsearch ./funsearch
 
-RUN pip install --no-deps . && rm -r ./funsearch ./build
+RUN pip install . && rm -r ./funsearch ./build
 
 CMD /bin/bash
